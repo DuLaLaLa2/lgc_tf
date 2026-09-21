@@ -1,0 +1,2 @@
+﻿method,val_mcc,test_mcc,test_auc,test_aupr,test_f1,test_precision,test_recall,test_specificity,best_threshold,best_epoch,d_model,num_bimamba_layers,d_state,d_conv,expand,dropout,seed
+ESM2 + LGC + BiMamba,0.4748291495966674,0.30650684500617537,0.8496438660578667,0.258494434862663,0.3416888888888889,0.26739009460211466,0.4731659281142294,0.9254403352777935,0.52,4,256,2,16,4,2,0.1,42

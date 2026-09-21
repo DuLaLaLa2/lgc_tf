@@ -1,0 +1,5 @@
+﻿length_bin,protein_count,residue_count,transformer_mcc
+<500,98,23550,0.329777281730504
+500-1000,19,13795,0.24057266067052416
+1000-1500,0,0,nan
+>1500,0,0,nan

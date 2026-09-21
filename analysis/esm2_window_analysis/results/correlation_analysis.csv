@@ -1,0 +1,4 @@
+﻿variable,spearman_rho,p_value,valid_protein_count
+esm2_window_count,-0.003400963112,0.9007938835,1346
+sequence_length,0.09135424884,0.0007922233526,1346
+positive_ratio,-0.0500223766,0.0665563599,1346

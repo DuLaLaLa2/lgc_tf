@@ -1,0 +1,2 @@
+﻿method,fusion,val_mcc,test_mcc,test_auc,test_aupr,test_f1,test_precision,test_recall,test_specificity,best_threshold,best_epoch,d_model,num_bimamba_layers,d_state,d_conv,expand,dropout,seed
+ESM2 + Parallel LGC/BiMamba + Concat,concat_h_lgc_h_bimamba_without_projection,0.47510690040964726,0.3559937114076732,0.8535223050176686,0.3473783320577909,0.3986089841755998,0.3475672517873536,0.46722261695523726,0.9406925815783618,0.53,7,256,2,16,4,2,0.1,42

@@ -1,0 +1,28 @@
+﻿window_group,method,metric,aggregation,value
+1-window,Transformer,mcc,micro,0.3661875764
+1-window,Transformer,aupr,micro,0.370908126
+1-window,Transformer,f1,micro,0.41301567
+1-window,Transformer,precision,micro,0.3461352916
+1-window,Transformer,recall,micro,0.5119311876
+1-window,Transformer,mcc,macro,0.2926182436
+1-window,Transformer,aupr,macro,0.3900401748
+1-window,Transformer,f1,macro,0.3408814172
+2-window,Transformer,mcc,micro,0.1711429094
+2-window,Transformer,aupr,micro,0.1380665916
+2-window,Transformer,f1,micro,0.1899269512
+2-window,Transformer,precision,micro,0.1732117812
+2-window,Transformer,recall,micro,0.210212766
+2-window,Transformer,mcc,macro,0.1405992176
+2-window,Transformer,aupr,macro,0.1737847314
+2-window,Transformer,f1,macro,0.1313904289
+3-window,Transformer,mcc,micro,0.1838489526
+3-window,Transformer,aupr,micro,0.1284005061
+3-window,Transformer,f1,micro,0.2008253095
+3-window,Transformer,precision,micro,0.1876606684
+3-window,Transformer,recall,micro,0.2159763314
+3-window,Transformer,mcc,macro,0.1786348605
+3-window,Transformer,aupr,macro,0.1564025666
+3-window,Transformer,f1,macro,0.1811346715
+1-window,Ground truth,positive_ratio,micro,0.07191910668
+2-window,Ground truth,positive_ratio,micro,0.02156833951
+3-window,Ground truth,positive_ratio,micro,0.01996691871

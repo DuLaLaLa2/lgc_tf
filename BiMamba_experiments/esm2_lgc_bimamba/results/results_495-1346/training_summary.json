@@ -1,0 +1,39 @@
+{
+  "model": "Sliding-window ESM2-3B + LGC + BiMamba",
+  "checkpoint": "/lgc_tf/BiMamba_experiments/esm2_lgc_bimamba/checkpoints/esm2_lgc_bimamba_best_newloss.pt",
+  "best_epoch": 4,
+  "best_val_mcc": 0.4748291495966674,
+  "best_threshold": 0.52,
+  "model_config": {
+    "esm2_dim": 2560,
+    "d_model": 256,
+    "num_bimamba_layers": 2,
+    "d_state": 16,
+    "d_conv": 4,
+    "expand": 2,
+    "dropout": 0.1,
+    "classifier_hidden_dim": 128,
+    "sde_dim": 16,
+    "cutoff": 30.0,
+    "k_neighbors": 16,
+    "mamba_backend": "mamba"
+  },
+  "training_config": {
+    "seed": 42,
+    "epochs": 80,
+    "patience": 10,
+    "batch_size": 2,
+    "accumulation_steps": 4,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "max_grad_norm": 1.0,
+    "num_workers": 2,
+    "use_amp": true,
+    "focal_gamma": 2.0,
+    "threshold_start": 0.01,
+    "threshold_end": 0.99,
+    "threshold_step": 0.01
+  },
+  "total_parameters": 4157441,
+  "trainable_parameters": 4157441
+}

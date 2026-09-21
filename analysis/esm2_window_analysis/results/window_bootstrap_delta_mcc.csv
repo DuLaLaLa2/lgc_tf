@@ -1,0 +1,4 @@
+﻿window_group,protein_count,observed_delta_mcc,bootstrap_mean_delta_mcc,ci_2.5,ci_97.5,n_bootstrap,bootstrap_unit,seed
+1-window,1295,NaN,NaN,NaN,NaN,2000,protein,42
+2-window,43,0.04225627548,0.04083269858,0.00226529996,0.07923729243,2000,protein,42
+3-window,8,-0.037374737,-0.03837740582,-0.09126870746,0.001570649781,2000,protein,42
