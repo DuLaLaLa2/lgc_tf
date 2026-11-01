@@ -16,8 +16,9 @@ PROJECT_DIR = Path(__file__).resolve().parent
 
 DATA_ROOT = Path("/root/autodl-tmp/features/merged")
 
-# TEST_DIR = DATA_ROOT / "RNA_1346_New"
-TEST_DIR = DATA_ROOT / "RNA-117_Test"
+TEST_DIR = DATA_ROOT / "RNA_1346_New"
+# TEST_DIR = DATA_ROOT / "RNA-117_Test"
+TEST_DIR = "/root/autodl-tmp/features/feat_extra"
 CHECKPOINT = PROJECT_DIR / "outputs" / "checkpoints" / "lgc_transformer_best-495-1346_loss1.pt"
 OUTPUT_DIR = PROJECT_DIR / "outputs" / "predictions"
 

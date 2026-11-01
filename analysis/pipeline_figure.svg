@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 1180" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrLight" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#777"/>
+    </marker>
+    <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eaf3ff"/><stop offset="100%" stop-color="#cfe3ff"/>
+    </linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff2e0"/><stop offset="100%" stop-color="#ffd9a8"/>
+    </linearGradient>
+    <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9f7ec"/><stop offset="100%" stop-color="#c6e9d0"/>
+    </linearGradient>
+    <linearGradient id="gD" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6e8f6"/><stop offset="100%" stop-color="#e3c7e3"/>
+    </linearGradient>
+    <style>
+      .title{font-size:22px;font-weight:700;fill:#111}
+      .panel{font-size:16px;font-weight:700;fill:#111}
+      .mod{font-size:13px;font-weight:600;fill:#111}
+      .sub{font-size:11px;fill:#333}
+      .tag{font-size:10.5px;fill:#555;font-style:italic}
+      .shape{stroke:#333;stroke-width:1.2}
+      .edge{stroke:#333;stroke-width:1.4;fill:none}
+      .edgeL{stroke:#777;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+      .box{fill:#ffffff;stroke:#333;stroke-width:1.1;rx:6;ry:6}
+      .pA{fill:url(#gA)}
+      .pB{fill:url(#gB)}
+      .pC{fill:url(#gC)}
+      .pD{fill:url(#gD)}
+      .formula{font-family:"Times New Roman",serif;font-style:italic;font-size:12px;fill:#111}
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="840" y="34" text-anchor="middle" class="title">Experimental Pipeline of ESM2 + LGC + Transformer for Residue-level RNA-binding Site Prediction</text>
+  <text x="840" y="56" text-anchor="middle" class="sub">Step1 ablation: per-protein vs per-residue loss normalization under global-weighted focal loss</text>
+
+  <!-- =============== PANEL A : Feature Extraction =============== -->
+  <rect x="20" y="80" width="400" height="1080" rx="10" class="pA shape"/>
+  <text x="220" y="108" text-anchor="middle" class="panel">A. Multi-modal Feature Extraction</text>
+  <text x="220" y="126" text-anchor="middle" class="tag">feature_extra_clean.py</text>
+
+  <!-- Input -->
+  <rect x="55" y="150" width="330" height="60" class="box"/>
+  <text x="220" y="172" text-anchor="middle" class="mod">Protein sequence input</text>
+  <text x="220" y="190" text-anchor="middle" class="sub">single string / FASTA / TXT  →  clean to 20AA + X</text>
+  <text x="220" y="204" text-anchor="middle" class="tag">read_user_sequences(), clean_sequence()</text>
+
+  <line x1="220" y1="212" x2="220" y2="240" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Branches -->
+  <rect x="55" y="245" width="155" height="150" class="box"/>
+  <text x="132" y="265" text-anchor="middle" class="mod">ESM2-3B encoder</text>
+  <text x="132" y="283" text-anchor="middle" class="sub">frozen; eval mode</text>
+  <text x="132" y="301" text-anchor="middle" class="sub">single-window if L ≤ L_max</text>
+  <text x="132" y="317" text-anchor="middle" class="sub">sliding-window (stride)</text>
+  <text x="132" y="333" text-anchor="middle" class="sub">+ overlap mean for L &gt; L_max</text>
+  <text x="132" y="358" text-anchor="middle" class="formula">E_esm2 ∈ ℝ^(L×2560)</text>
+  <text x="132" y="380" text-anchor="middle" class="tag">stage_extract_esm2()</text>
+
+  <rect x="230" y="245" width="155" height="150" class="box"/>
+  <text x="307" y="265" text-anchor="middle" class="mod">ESM3 structure predictor</text>
+  <text x="307" y="283" text-anchor="middle" class="sub">esm3-sm-open-v1</text>
+  <text x="307" y="301" text-anchor="middle" class="sub">NUM_STEPS, T = 0</text>
+  <text x="307" y="319" text-anchor="middle" class="sub">atom37 ∈ ℝ^(L×37×3)</text>
+  <text x="307" y="340" text-anchor="middle" class="formula">C_α ∈ ℝ^(L×3)</text>
+  <text x="307" y="358" text-anchor="middle" class="formula">m_c ∈ {0,1}^L</text>
+  <text x="307" y="380" text-anchor="middle" class="tag">stage_predict_esm3_and_merge()</text>
+
+  <line x1="132" y1="395" x2="132" y2="430" class="edge" marker-end="url(#arr)"/>
+  <line x1="307" y1="395" x2="307" y2="430" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Merge -->
+  <rect x="55" y="435" width="330" height="90" class="box"/>
+  <text x="220" y="457" text-anchor="middle" class="mod">Per-protein feature bundle (.pt)</text>
+  <text x="220" y="476" text-anchor="middle" class="sub">{ esm2_embedding, ca_coords, coord_mask, label, length }</text>
+  <text x="220" y="494" text-anchor="middle" class="sub">manifest.csv + optional PDB</text>
+  <text x="220" y="514" text-anchor="middle" class="tag">merge: ESM2 ⊕ ESM3  →  single tensor file per protein</text>
+
+  <line x1="220" y1="528" x2="220" y2="560" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Dataset -->
+  <rect x="55" y="565" width="330" height="100" class="box"/>
+  <text x="220" y="586" text-anchor="middle" class="mod">RNABindingDataset + pad_collate_fn</text>
+  <text x="220" y="605" text-anchor="middle" class="sub">variable-length → zero-padded batch</text>
+  <text x="220" y="622" text-anchor="middle" class="formula">x[B,L,2560], coords[B,L,3]</text>
+  <text x="220" y="640" text-anchor="middle" class="formula">mask[B,L], coord_mask[B,L], y[B,L]</text>
+  <text x="220" y="657" text-anchor="middle" class="tag">src/data/rna_dataset.py</text>
+
+  <!-- Datasets used -->
+  <rect x="55" y="690" width="330" height="110" class="box"/>
+  <text x="220" y="712" text-anchor="middle" class="mod">Training / testing corpora</text>
+  <text x="220" y="730" text-anchor="middle" class="sub">RNA-495 (train+val split 8:2, seed=42)</text>
+  <text x="220" y="746" text-anchor="middle" class="sub">RNA-117 (independent test)</text>
+  <text x="220" y="762" text-anchor="middle" class="sub">feat_extra (user-supplied sequences)</text>
+  <text x="220" y="782" text-anchor="middle" class="tag">residue-level binary label y ∈ {0,1}^L</text>
+
+  <!-- Class statistics -->
+  <rect x="55" y="820" width="330" height="120" class="box"/>
+  <text x="220" y="842" text-anchor="middle" class="mod">Class statistics (training set)</text>
+  <text x="220" y="862" text-anchor="middle" class="sub">N_pos / N_neg / imbalance ratio</text>
+  <text x="220" y="882" text-anchor="middle" class="formula">w_pos = clip(√(N_neg / N_pos), ≤ 5)</text>
+  <text x="220" y="902" text-anchor="middle" class="sub">computed once, frozen through training</text>
+  <text x="220" y="922" text-anchor="middle" class="tag">compute_sqrt_pos_weight()</text>
+
+  <!-- Note on dimensions -->
+  <rect x="55" y="960" width="330" height="180" class="box" fill="#f4faff"/>
+  <text x="220" y="982" text-anchor="middle" class="mod">Design notes</text>
+  <text x="70" y="1004" class="sub">• 2560-d ESM2 captures evolutionary / contextual residue</text>
+  <text x="70" y="1020" class="sub">  semantics; Cα coords inject 3D topology.</text>
+  <text x="70" y="1040" class="sub">• coord_mask separates valid atoms from NaN padding to</text>
+  <text x="70" y="1056" class="sub">  keep structural signal clean.</text>
+  <text x="70" y="1076" class="sub">• Sliding-window averaging preserves long-range context</text>
+  <text x="70" y="1092" class="sub">  without truncating sequences &gt; L_max.</text>
+  <text x="70" y="1112" class="sub">• All downstream models share identical pre-processing.</text>
+
+  <!-- cross-panel arrow -->
+  <line x1="385" y1="615" x2="455" y2="615" class="edge" marker-end="url(#arr)"/>
+
+  <!-- =============== PANEL B : Model =============== -->
+  <rect x="465" y="80" width="610" height="710" rx="10" class="pB shape"/>
+  <text x="770" y="108" text-anchor="middle" class="panel">B. ESM2-LGC-Transformer Architecture</text>
+  <text x="770" y="126" text-anchor="middle" class="tag">src/models/{lgc_transformer_model, lgc, sde}.py</text>
+
+  <!-- Input proj -->
+  <rect x="495" y="150" width="250" height="80" class="box"/>
+  <text x="620" y="172" text-anchor="middle" class="mod">Input projection</text>
+  <text x="620" y="190" text-anchor="middle" class="sub">Linear(2560→512) → LN → GELU → Dropout</text>
+  <text x="620" y="210" text-anchor="middle" class="formula">h ∈ ℝ^(B×L×512)</text>
+
+  <!-- Spatial encoder -->
+  <rect x="800" y="150" width="250" height="80" class="box"/>
+  <text x="925" y="172" text-anchor="middle" class="mod">Spatial distance encoder</text>
+  <text x="925" y="190" text-anchor="middle" class="sub">pairwise Cα distance → Bessel basis</text>
+  <text x="925" y="210" text-anchor="middle" class="formula">b_n(r) = √(2/c)·sin(nπr/c)/(r+ε),  c = 30Å, K = 16</text>
+
+  <line x1="620" y1="230" x2="620" y2="270" class="edge" marker-end="url(#arr)"/>
+  <line x1="925" y1="230" x2="925" y2="270" class="edge" marker-end="url(#arr)"/>
+
+  <!-- LGC -->
+  <rect x="495" y="275" width="555" height="140" class="box"/>
+  <text x="770" y="296" text-anchor="middle" class="mod">Local Geometric Context (LGC)</text>
+  <text x="770" y="316" text-anchor="middle" class="sub">kNN per residue (k = 16, Cα distance; respects pair &amp; coord mask)</text>
+  <text x="770" y="334" text-anchor="middle" class="formula">e_ij = MLP(sde_ij);  m_ij = MLP([h_j ∥ e_ij])</text>
+  <text x="770" y="354" text-anchor="middle" class="formula">g_i = (1/|N(i)|) · Σ_{j∈N(i)} m_ij</text>
+  <text x="770" y="374" text-anchor="middle" class="formula">h_i ← h_i + Dropout(OutProj(g_i))     (residual injection)</text>
+  <text x="770" y="398" text-anchor="middle" class="tag">LocalGeometricContext.forward</text>
+
+  <line x1="770" y1="415" x2="770" y2="450" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Positional fusion -->
+  <rect x="495" y="455" width="555" height="60" class="box"/>
+  <text x="770" y="476" text-anchor="middle" class="mod">Positional-encoding fusion</text>
+  <text x="770" y="496" text-anchor="middle" class="sub">sinusoidal sequence PE  +  (reserved slot for structural PE)  → Dropout → masked</text>
+
+  <line x1="770" y1="515" x2="770" y2="545" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Transformer -->
+  <rect x="495" y="550" width="555" height="80" class="box"/>
+  <text x="770" y="572" text-anchor="middle" class="mod">Transformer encoder × 4</text>
+  <text x="770" y="590" text-anchor="middle" class="sub">pre-norm, d_model = 512, heads = 8, FFN = 2048, GELU, dropout = 0.1</text>
+  <text x="770" y="610" text-anchor="middle" class="sub">src_key_padding_mask = ¬mask</text>
+
+  <line x1="770" y1="630" x2="770" y2="660" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Classifier -->
+  <rect x="495" y="665" width="555" height="60" class="box"/>
+  <text x="770" y="686" text-anchor="middle" class="mod">Residue classifier</text>
+  <text x="770" y="706" text-anchor="middle" class="sub">LN → Linear(512→256) → GELU → Dropout → Linear(256→1)</text>
+
+  <text x="770" y="760" text-anchor="middle" class="formula">output: logits ∈ ℝ^(B×L)   →   p = σ(logits)</text>
+
+  <!-- =============== PANEL C : Training =============== -->
+  <rect x="465" y="810" width="610" height="350" rx="10" class="pC shape"/>
+  <text x="770" y="836" text-anchor="middle" class="panel">C. Imbalance-aware Training  (Step1 Ablation)</text>
+  <text x="770" y="854" text-anchor="middle" class="tag">step1_loss_normalization/train.py</text>
+
+  <!-- loss -->
+  <rect x="495" y="870" width="265" height="150" class="box"/>
+  <text x="627" y="892" text-anchor="middle" class="mod">Global weighted focal loss</text>
+  <text x="627" y="912" text-anchor="middle" class="formula">p_t = σ(z) if y=1 else 1-σ(z)</text>
+  <text x="627" y="932" text-anchor="middle" class="formula">α_t = w_pos if y=1 else 1</text>
+  <text x="627" y="952" text-anchor="middle" class="formula">ℓ = -α_t·(1-p_t)^γ·log p_t</text>
+  <text x="627" y="975" text-anchor="middle" class="sub">γ = 2, w_pos = √(N_neg/N_pos) capped at 5</text>
+  <text x="627" y="997" text-anchor="middle" class="tag">GlobalWeightedFocalLossWithLogits</text>
+
+  <!-- normalization -->
+  <rect x="780" y="870" width="270" height="150" class="box"/>
+  <text x="915" y="892" text-anchor="middle" class="mod">Loss aggregation (--loss-norm)</text>
+  <text x="915" y="914" text-anchor="middle" class="sub"><tspan font-weight="700">residue</tspan> (baseline):</text>
+  <text x="915" y="932" text-anchor="middle" class="formula">L = mean_{i∈valid}  ℓ_i</text>
+  <text x="915" y="956" text-anchor="middle" class="sub"><tspan font-weight="700">protein</tspan> (Step1):</text>
+  <text x="915" y="974" text-anchor="middle" class="formula">L_b = mean_{i∈P_b} ℓ_i;  L = (1/B) Σ L_b</text>
+  <text x="915" y="998" text-anchor="middle" class="sub">long &amp; short proteins contribute equally</text>
+
+  <!-- Optimization -->
+  <rect x="495" y="1035" width="555" height="110" class="box"/>
+  <text x="770" y="1056" text-anchor="middle" class="mod">Optimization protocol</text>
+  <text x="520" y="1078" class="sub">• AdamW (lr=1e-4, wd=1e-2); grad clip 1.0; AMP fp16 on CUDA</text>
+  <text x="520" y="1096" class="sub">• batch_size = 2, accum_steps = 4   (effective batch = 8)</text>
+  <text x="520" y="1114" class="sub">• up to 80 epochs; early stop by validation MCC (patience = 10)</text>
+  <text x="520" y="1132" class="sub">• best checkpoint + validation-selected threshold are persisted</text>
+
+  <!-- =============== PANEL D : Evaluation =============== -->
+  <rect x="1095" y="80" width="565" height="1080" rx="10" class="pD shape"/>
+  <text x="1377" y="108" text-anchor="middle" class="panel">D. Evaluation &amp; Length-stratified Analysis</text>
+  <text x="1377" y="126" text-anchor="middle" class="tag">predict_lgc_transformer_with_length_stats.py</text>
+
+  <!-- Val -->
+  <rect x="1120" y="155" width="520" height="105" class="box"/>
+  <text x="1380" y="177" text-anchor="middle" class="mod">Validation (per epoch)</text>
+  <text x="1380" y="197" text-anchor="middle" class="sub">collect residue probs on valid positions only</text>
+  <text x="1380" y="217" text-anchor="middle" class="sub">sweep threshold ∈ [0, 1]; pick t* that maximises MCC</text>
+  <text x="1380" y="237" text-anchor="middle" class="formula">best_val_mcc, t*  →  save checkpoint</text>
+  <text x="1380" y="253" text-anchor="middle" class="tag">find_best_threshold()</text>
+
+  <line x1="1380" y1="260" x2="1380" y2="295" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Overall metrics -->
+  <rect x="1120" y="300" width="520" height="130" class="box"/>
+  <text x="1380" y="322" text-anchor="middle" class="mod">Independent test — overall metrics</text>
+  <text x="1380" y="342" text-anchor="middle" class="sub">load best checkpoint; apply fixed threshold t*</text>
+  <text x="1380" y="362" text-anchor="middle" class="sub">compute on all valid residues of the test set</text>
+  <text x="1380" y="384" text-anchor="middle" class="formula">MCC,  F1,  AUROC,  AUPR,  Precision,  Recall</text>
+  <text x="1380" y="406" text-anchor="middle" class="tag">compute_binary_metrics()</text>
+  <text x="1380" y="422" text-anchor="middle" class="sub">primary metric: MCC (imbalance-robust)</text>
+
+  <line x1="1380" y1="430" x2="1380" y2="465" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Length-stratified -->
+  <rect x="1120" y="470" width="520" height="235" class="box"/>
+  <text x="1380" y="492" text-anchor="middle" class="mod">Length-stratified MCC</text>
+  <text x="1380" y="511" text-anchor="middle" class="sub">bin proteins by their true length (coord-based)</text>
+
+  <!-- bins table -->
+  <rect x="1150" y="525" width="460" height="130" fill="#ffffff" stroke="#777" stroke-width="1" rx="4"/>
+  <line x1="1150" y1="550" x2="1610" y2="550" stroke="#777"/>
+  <text x="1200" y="543" text-anchor="middle" class="sub" font-weight="700">length bin</text>
+  <text x="1340" y="543" text-anchor="middle" class="sub" font-weight="700">#proteins</text>
+  <text x="1460" y="543" text-anchor="middle" class="sub" font-weight="700">#residues</text>
+  <text x="1570" y="543" text-anchor="middle" class="sub" font-weight="700">MCC</text>
+
+  <text x="1200" y="572" text-anchor="middle" class="sub">&lt; 500</text>
+  <text x="1200" y="593" text-anchor="middle" class="sub">500 – 1000</text>
+  <text x="1200" y="614" text-anchor="middle" class="sub">1000 – 1500</text>
+  <text x="1200" y="635" text-anchor="middle" class="sub">&gt; 1500</text>
+
+  <text x="1430" y="572" text-anchor="middle" class="sub">pooled residues per bin</text>
+  <text x="1430" y="593" text-anchor="middle" class="sub">then compute per-bin MCC</text>
+  <text x="1430" y="614" text-anchor="middle" class="sub">at the single threshold t*</text>
+  <text x="1430" y="635" text-anchor="middle" class="sub">(no re-tuning per bin)</text>
+
+  <text x="1380" y="680" text-anchor="middle" class="sub">output: length_mcc_step1_{residue|protein}.csv</text>
+  <text x="1380" y="697" text-anchor="middle" class="tag">evaluate_by_length()</text>
+
+  <!-- Comparison box -->
+  <rect x="1120" y="720" width="520" height="135" class="box" fill="#fff6fb"/>
+  <text x="1380" y="742" text-anchor="middle" class="mod">Step1 ablation comparison</text>
+  <text x="1140" y="765" class="sub">H0: per-protein normalization yields equal or higher MCC on</text>
+  <text x="1140" y="783" class="sub">    long-protein bins (≥1000 aa) without hurting short bins.</text>
+  <text x="1140" y="805" class="sub">Variables held constant: data split, model weights seed, loss class,</text>
+  <text x="1140" y="823" class="sub">pos_weight, γ, optimizer, scheduler, AMP, early-stop criterion.</text>
+  <text x="1140" y="843" class="sub">Only --loss-norm ∈ {residue, protein} differs between runs.</text>
+
+  <!-- Reproducibility -->
+  <rect x="1120" y="870" width="520" height="130" class="box" fill="#faf4ff"/>
+  <text x="1380" y="892" text-anchor="middle" class="mod">Reproducibility &amp; artefacts</text>
+  <text x="1140" y="914" class="sub">• seed = 42 governs python / numpy / torch / dataloader splits</text>
+  <text x="1140" y="932" class="sub">• checkpoint stores: model state, best threshold, class statistics,</text>
+  <text x="1140" y="949" class="sub">  architecture hyper-params and split protocol (self-describing)</text>
+  <text x="1140" y="967" class="sub">• predictor rebuilds the model from the checkpoint config, so test</text>
+  <text x="1140" y="985" class="sub">  evaluation is independent of training-time constants.</text>
+
+  <!-- Outputs -->
+  <rect x="1120" y="1015" width="520" height="130" class="box" fill="#ffffff"/>
+  <text x="1380" y="1037" text-anchor="middle" class="mod">Deliverables</text>
+  <text x="1140" y="1059" class="sub">• outputs/checkpoints/lgc_transformer_step1_{norm}_2.pt</text>
+  <text x="1140" y="1077" class="sub">• outputs/length_stats/length_mcc_step1_{norm}.csv</text>
+  <text x="1140" y="1095" class="sub">• outputs/predictions/transformer_residue_predictions.csv</text>
+  <text x="1140" y="1113" class="sub">• outputs/predictions/transformer_length_mcc.csv</text>
+  <text x="1140" y="1133" class="sub">• console log with per-epoch val metrics and final test metrics</text>
+
+  <!-- cross arrow B->C (training) and C->D (evaluation) -->
+  <line x1="770" y1="790" x2="770" y2="810" class="edge" marker-end="url(#arr)"/>
+  <line x1="1075" y1="990" x2="1120" y2="990" class="edgeL" marker-end="url(#arrLight)"/>
+  <text x="1097" y="982" text-anchor="middle" class="tag">test</text>
+  <line x1="1075" y1="615" x2="1120" y2="615" class="edgeL" marker-end="url(#arrLight)"/>
+  <text x="1097" y="608" text-anchor="middle" class="tag">val</text>
+
+</svg>

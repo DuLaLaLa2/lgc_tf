@@ -1,0 +1,8 @@
+# 建议在 Linux + CUDA 环境中安装与 CUDA/PyTorch 匹配的版本。
+torch>=2.2
+mamba-ssm>=2.2.2
+causal-conv1d>=1.4.0
+numpy>=1.24
+scikit-learn>=1.3
+pytest>=8.0
+
